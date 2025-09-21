@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KMRL Metro Depot - Cleaning Management System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f9fafb;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: #ffffff;
+            color: #1f2937;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: #3498db;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+        }
+
+        .header-text h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #2c3e50;
+            letter-spacing: -0.5px;
+        }
+
+        .header-text p {
+            color: #6c757d;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .datetime {
+            text-align: right;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: #f8f9fa;
+            opacity: 0.6;
+            border-radius: 50%;
+            transform: translate(25px, -25px);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            border-color: #d1d5db;
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .cleaning-icon { background: #10b981; }
+        .air-icon { background: #3b82f6; }
+        .staff-icon { background: #f59e0b; }
+        .train-icon { background: #8b5cf6; }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .cleaning-log {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+        }
+
+        .log-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .log-header h2 {
+            font-size: 20px;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .log-entry {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #f9fafb;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .log-entry:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .log-time {
+            font-weight: 500;
+            color: #374151;
+            margin-right: 16px;
+            min-width: 100px;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+        }
+
+        .log-details {
+            flex: 1;
+        }
+
+        .staff-name {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .train-info {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .air-quality-panel {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            height: fit-content;
+        }
+
+        .air-quality-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .air-quality-header h2 {
+            font-size: 18px;
+            color: #1f2937;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .air-meter {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            position: relative;
+            background: conic-gradient(
+                from 0deg,
+                #4CAF50 0deg 120deg,
+                #FFC107 120deg 240deg,
+                #F44336 240deg 360deg
+            );
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .air-meter::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .air-value {
+            position: relative;
+            z-index: 1;
+            font-size: 28px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .air-status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-good { background: #dcfce7; color: #166534; }
+        .status-moderate { background: #fef3c7; color: #d97706; }
+        .status-poor { background: #fee2e2; color: #dc2626; }
+
+        .alert {
+            background: #ef4444;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            animation: pulse 2s infinite;
+            margin-top: 16px;
+        }
+
+        .alert i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .progress-section {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #3b82f6;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: #3b82f6;
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 0 8px;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Improved responsive design */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .control-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .stat-card, .cleaning-log, .air-quality-panel, .progress-section {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">K</div>
+                <div class="header-text">
+                    <h1>KMRL Metro Depot</h1>
+                    <p>Cleaning Management System</p>
+                </div>
+            </div>
+            <div class="datetime">
+                <div id="current-time"></div>
+                <div id="current-date"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon cleaning-icon">
+                        <i class="fas fa-broom"></i>
+                    </div>
+                </div>
+                <div class="stat-value">{{ data.daily_count }}</div>
+                <div class="stat-label">Trains Cleaned Today</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon air-icon">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                </div>
+                <div class="stat-value">{{ data.air_quality or '--' }}</div>
+                <div class="stat-label">Air Quality Index</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon staff-icon">
+                        <i class="fas fa-user-hard-hat"></i>
+                    </div>
+                </div>
+                <div class="stat-value">{{ 'Staff ' + data.staff_id|string if data.staff_id else '--' }}</div>
+                <div class="stat-label">Current Staff on Duty</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon train-icon">
+                        <i class="fas fa-train"></i>
+                    </div>
+                </div>
+                <div class="stat-value">{{ 20 - data.daily_count }}</div>
+                <div class="stat-label">Trains Pending</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="cleaning-log">
+                <div class="log-header">
+                    <h2><i class="fas fa-clipboard-list"></i> Recent Cleaning Activities</h2>
+                </div>
+                <div id="cleaning-log-entries">
+                    {% if data.cleaning_history %}
+                        {% for entry in data.cleaning_history %}
+                        <div class="log-entry">
+                            <div class="log-time">{{ entry.time }}</div>
+                            <div class="log-details">
+                                <div class="staff-name">Staff {{ entry.staff_id }}</div>
+                                <div class="train-info">{{ entry.train_info }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="log-entry">
+                        <div class="log-time">--:--</div>
+                        <div class="log-details">
+                            <div class="staff-name">Waiting for data...</div>
+                            <div class="train-info">No recent activity</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="air-quality-panel">
+                <div class="air-quality-header">
+                    <h2>Air Quality Monitor</h2>
+                </div>
+                <div class="air-meter">
+                    <div class="air-value">{{ data.air_quality or '--' }}</div>
+                </div>
+                <div class="air-status {% if data.air_quality %}{% if data.air_quality <= 50 %}status-good{% elif data.air_quality <= 100 %}status-moderate{% else %}status-poor{% endif %}{% else %}status-good{% endif %}">
+                    {% if data.air_quality %}
+                        {% if data.air_quality <= 50 %}GOOD{% elif data.air_quality <= 100 %}MODERATE{% else %}POOR{% endif %}
+                    {% else %}
+                        MONITORING...
+                    {% endif %}
+                </div>
+                {% if data.air_quality and data.air_quality > 100 %}
+                <div class="alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>AIR QUALITY ALERT!</strong><br>
+                    Immediate attention required
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-header">
+                <h2><i class="fas fa-chart-line"></i> Daily Cleaning Progress</h2>
+                <span>{{ ((data.daily_count / 20) * 100)|round }}%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ ((data.daily_count / 20) * 100)|round }}%"></div>
+            </div>
+            <div class="progress-text">
+                <span>Completed: {{ data.daily_count }}</span>
+                <span>Target: 20 trains/day</span>
+            </div>
+        </div>
+
+        <div class="control-buttons">
+            <button class="btn" onclick="refreshPage()">
+                <i class="fas fa-sync-alt"></i> Refresh Data
+            </button>
+            <button class="btn" onclick="resetCount()">
+                <i class="fas fa-undo"></i> Reset Daily Count
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const timeOptions = { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                hour12: true 
+            };
+            const dateOptions = { 
+                weekday: 'long',
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            
+            document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', timeOptions);
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', dateOptions);
+        }
+
+        // Refresh the page to get latest data
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        // Reset daily count
+        async function resetCount() {
+            if (confirm('Are you sure you want to reset the daily count?')) {
+                try {
+                    const response = await fetch('/reset', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        alert('Daily count reset successfully!');
+                        refreshPage();
+                    }
+                } catch (error) {
+                    console.error('Error resetting count:', error);
+                    alert('Failed to reset count');
+                }
+            }
+        }
+
+        // Auto-refresh page every 15 seconds
+        function autoRefresh() {
+            setInterval(() => {
+                window.location.reload();
+            }, 15000);
+        }
+
+        // Initialize
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        
+        // Start auto refresh
+        autoRefresh();
+    </script>
+</body>
+</html>
